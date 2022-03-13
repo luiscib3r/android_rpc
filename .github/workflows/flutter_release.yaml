@@ -1,0 +1,28 @@
+name: Flutter release workflow
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v2
+
+      - name: Install dependencies
+        run: |
+          flutter pub get
+
+      - name: Build android application
+        run: |
+          flutter build apk
+
+      - name: Release artifacts
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: |
+            build/app/outputs/flutter-apk/app-release.apk
